@@ -8,6 +8,7 @@ SNAPSHOT_DEF=$ROOT_DIR/snapshot
 SNAPSHOT_DIR="${SNAPSHOT_DIR:-$SNAPSHOT_DEF}"
 RKDEVELOP_TOOL="${RKDEVELOP_TOOL:-sudo rkdeveloptool}"
 BOARD_CTRL=$SCRIPT_DIR/board/board.sh
+MINICOM_SCRIPT=$SCRIPT_DIR/minicom.sh
 
 
 if [[ -f "${SCRIPT_DIR}/flash.env" ]]; then
@@ -36,8 +37,14 @@ function board_off {
     $BOARD_CTRL off
 }
 
-function board_maskrom { 
+function board_maskrom {
     $BOARD_CTRL maskrom
+}
+
+function minicom {
+    echo "Launching minicom..."
+    sleep 1
+    bash $MINICOM_SCRIPT
 }
 
 function enter_maskrom {
@@ -146,7 +153,6 @@ function show_device {
     cd $cwd
 }
 
-
 function print_help() {
     echo "Usage: $0 <command>"
     echo "Commands:"
@@ -158,6 +164,7 @@ function print_help() {
     echo "  on        - Power on the board"
     echo "  off       - Power off the board"
     echo "  reboot    - Reboot the board"
+    echo "  minicom   - Connect to board with ttyusb"
     echo "  help      - Show this help message"
 }    
 
@@ -189,6 +196,9 @@ case "$1" in
     reboot)            
         board_reboot
         ;;
+    minicom)
+	minicom
+	;;
     *)
         print_help
 esac

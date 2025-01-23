@@ -5,7 +5,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 set -x
 DEV=/dev/ttyUSB0
-
+TTYUSB="${TTYUSB:-$DEV}"
 #
 # XXX: Write to user directory is ugly, we leave it as is for now
 #
@@ -21,4 +21,4 @@ pu rtscts           No
 CMD
 
 
-minicom -w -t xterm -l -R UTF-8 -D $DEV rock5 -C $SCRIPT_DIR/minicom.txt
+minicom -w -t xterm -l -R UTF-8 -D $TTYUSB rock5 -C $SCRIPT_DIR/minicom.txt
