@@ -153,6 +153,7 @@ function show_device {
     cd $cwd
 }
 
+
 function print_help() {
     echo "Usage: $0 <command>"
     echo "Commands:"
@@ -160,7 +161,7 @@ function print_help() {
     echo "  mmc       - Flash via MMC"
     echo "  clear     - Clear the SPI flash memory"
     echo "  maskrom   - Put device into maskrom mode and flash memory driver."
-    echo "  device    - Alias for maskrom"
+    echo "  device    - Put device into maskrom mode but do not flash memory driver."
     echo "  on        - Power on the board"
     echo "  off       - Power off the board"
     echo "  reboot    - Reboot the board"
@@ -182,7 +183,8 @@ case "$1" in
         clear_flash
         ;;
     device)
-        show_device
+        wait_for_device_or_die
+	$RKDEVELOP_TOOL ld
         ;;
    maskrom)
         show_device
