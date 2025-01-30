@@ -3,7 +3,7 @@ set -euo pipefail
 set -x
 readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-POWER_PLUG_HOST="${POWER_PLUG_HOST:-http://192.168.4.16/cm}"
+POWER_PLUG_HOST="${POWER_PLUG_HOST:-}"
 
 function do_request() {
   local url="$1"

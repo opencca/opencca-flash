@@ -5,6 +5,9 @@ import os
 # Pin configuration
 MOSFET_PIN = int(os.getenv('MOSFET_PIN', 11)) 
 
+print("using pin: ", MOSFET_PIN)
+
+
 # GPIO setup
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(MOSFET_PIN, GPIO.OUT)
