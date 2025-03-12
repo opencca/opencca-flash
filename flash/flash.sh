@@ -20,6 +20,7 @@ source_env
 
 SNAPSHOT_DIR="${OPENCCA_SNAPSHOT_DIR:-$ROOT_DIR/snapshot}"
 RKDEVELOP_TOOL="${OPENCCA_RKDEVELOP_TOOL:-sudo $ROOT_DIR/tools/rkdeveloptool}"
+OPENCCA_SPL_LOADER="${OPENCCA_SPL_LOADER:-$ROOT_DIR/tools/rk3588/rk3588_spl_loader_v1.08.111.bin}"
 CMD=$RKDEVELOP_TOOL
 
 BOARD_CTRL=$SCRIPT_DIR/board/board.sh
@@ -28,9 +29,10 @@ MINICOM_SCRIPT=$SCRIPT_DIR/minicom.sh
 function verbose_output {
     GRAY='\033[90m'
     RESET='\033[0m'
+    
+    exec 3>&1 4>&2  # Save original stdout and stderr
+    exec > >(awk '{print "'"$GRAY"'" $0 "'"$RESET"'"}') 2>&1
 
-    exec 3>&1 4>&2 
-    exec > >(awk '{print "'"$GRAY"'" $0 "'"$RESET"'"}') 2>&1 
     set -x
 }
 
@@ -106,10 +108,15 @@ function wait_for_device_or_die {
 
 function transfer_loader {
     local cwd=$PWD
-
-    cd $SNAPSHOT_DIR    
-    $CMD db ./rk3588_spl_loader_v1.08.111.bin
-    cd $cwd
+    
+    # Do not transfer loader if already transfered
+    if $CMD rid | grep -iq failed; then
+        cd $SNAPSHOT_DIR
+        $CMD db $OPENCCA_SPL_LOADER
+        cd $cwd
+    else
+        echo "Loader already transfered. Skipping"
+    fi
 }
 
 
@@ -166,11 +173,10 @@ function show_device {
     wait_for_device_or_die
     cd $SNAPSHOT_DIR
     verbose_output
-
     transfer_loader
+    verbose_reset
     $CMD ld
 
-    verbose_reset
     cd $cwd
 }
 
