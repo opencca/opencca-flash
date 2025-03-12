@@ -4,3 +4,5 @@ venv
 flash.env
 .lgd-nfy0
 minicom.txt
+.env
+env

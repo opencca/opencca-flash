@@ -1,4 +1,4 @@
-# Board Server RPI
+# Flash Server for opencca
 
 ```
 + set +x
@@ -16,18 +16,27 @@ Commands:
   help      - Show this help message
 ```
 
-See flash.env.inc as template, create flash.env.
+See env.template as template, create .env file.
 
-## Workflow
-Flash new firmware
+## Flash firmware (emmc)
+Flash new firmware (with emmc)
 
 ```
 ./flash.sh mmc
 ```
-- flashes assets from /assets/ onto device, we use emmc
+- Flashes assets from snapshot directory onto device.
+
+## Flash firmware (spi)
+Flash new firmware (spi nand)
+
+```
+./flash.sh spi
+```
+- flashes assets from snapshot directory onto device
+
 
 ## Get uart
 ```
-sudo ./flash.sh minicom
+./flash.sh minicom
 ```
 

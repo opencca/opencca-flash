@@ -2,21 +2,23 @@
 set -euo pipefail
 
 readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-ROOT_DIR=$SCRIPT_DIR/../../
+ROOT_DIR=$SCRIPT_DIR/
 
 SNAPSHOT_DEF=$ROOT_DIR/snapshot
 SNAPSHOT_DIR="${SNAPSHOT_DIR:-$SNAPSHOT_DEF}"
-RKDEVELOP_TOOL="${RKDEVELOP_TOOL:-sudo rkdeveloptool}"
+RKDEVELOP_TOOL="${RKDEVELOP_TOOL:-sudo $ROOT_DIR/tools/rkdeveloptool}"
 BOARD_CTRL=$SCRIPT_DIR/board/board.sh
 MINICOM_SCRIPT=$SCRIPT_DIR/minicom.sh
 
 
-if [[ -f "${SCRIPT_DIR}/flash.env" ]]; then
-    echo "Sourcing ${SCRIPT_DIR}/flash.env ..."
-    set -x
-    source "${SCRIPT_DIR}/flash.env"
-    set +x
+if [[ -f "${SCRIPT_DIR}/.env" ]]; then
+    echo "Sourcing ${SCRIPT_DIR}/.env ..."
+    source "${SCRIPT_DIR}/.env"
 fi
+
+echo "======== ENV ========"
+env | grep -v "LS_COLORS"
+echo "======== ENV ========"
 
 
 readonly CMD=$RKDEVELOP_TOOL
@@ -157,16 +159,17 @@ function show_device {
 function print_help() {
     echo "Usage: $0 <command>"
     echo "Commands:"
-    echo "  spi       - Flash via SPI"
-    echo "  mmc       - Flash via MMC"
-    echo "  clear     - Clear the SPI flash memory"
-    echo "  maskrom   - Put device into maskrom mode and flash memory driver."
-    echo "  device    - Put device into maskrom mode but do not flash memory driver."
-    echo "  on        - Power on the board"
-    echo "  off       - Power off the board"
-    echo "  reboot    - Reboot the board"
-    echo "  minicom   - Connect to board with ttyusb"
-    echo "  help      - Show this help message"
+    echo "  spi                   - Flash via SPI"
+    echo "  mmc                   - Flash via MMC"
+    echo "  clear                 - Clear the SPI flash memory"
+    echo "  maskrom               - Put device into maskrom mode and flash memory driver."
+    echo "  device                - Put device into maskrom mode but do not flash memory driver."
+    echo "  on                    - Power on the board"
+    echo "  off                   - Power off the board"
+    echo "  reboot                - Reboot the board"
+    echo "  minicom               - Connect to board with ttyusb"
+    echo "  rkdeveloptool <args>  - Run rkdeveloptool"
+    echo "  help                  - Show this help message"
 }    
 
 
@@ -199,8 +202,11 @@ case "$1" in
         board_reboot
         ;;
     minicom)
-	minicom
-	;;
+        minicom
+        ;;
+    rkdeveloptool)
+        $CMD "${@:2}"
+        ;;
     *)
         print_help
 esac
