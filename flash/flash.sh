@@ -141,7 +141,7 @@ function enter_maskrom {
         echo "Device already in Maskrom mode."
         return 0
     fi
-    board_maskrom
+    cmd_board_maskrom
 }
 
 function wait_for_device_or_die {
