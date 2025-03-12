@@ -1,0 +1,19 @@
+[Unit]
+Description=OpenCCA WiFi Hotspot Docker Service
+After=network.target
+Requires=docker.service
+
+#
+# Run hotspot during system boot
+#
+[Service]
+WorkingDirectory=PROJ_DIR
+ExecStart=PROJ_DIR/run_hotspot.sh
+StandardOutput=append:PROJ_DIR/hotspot.log.txt
+StandardError=append:PROJ_DIR/hotspot.err.txt
+Restart=on-failure
+RestartSec=5s
+User=root
+
+[Install]
+WantedBy=multi-user.target
