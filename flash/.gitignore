@@ -8,3 +8,5 @@ minicom.txt
 env
 tools/log
 
+.env*
+env*

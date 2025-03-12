@@ -14,7 +14,7 @@ function source_env {
         source "${SCRIPT_DIR}/.env"
     fi
     echo -e "\033[34m======== OpenCCA ENV ========"
-    env | grep -v "LS_COLORS" | grep OPENCCA
+    env | grep -v "LS_COLORS" | grep OPENCCA | sort
     echo -e "======== OpenCCA ENV ======== \033[0m"
 }
 
