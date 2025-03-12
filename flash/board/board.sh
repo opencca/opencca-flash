@@ -42,7 +42,7 @@ case "$1" in
         board_maskrom
         ;;
     *)
-        echo "unknown command"
+        echo "Usage: $0 {on|off|reboot|maskrom}"
 esac
 
 

@@ -6,9 +6,9 @@ VENV_DIR=$SCRIPT_DIR/venv
 
 
 if [ ! -d "$VENV_DIR" ]; then
-    echo "Error: 'venv' folder does not exist in $SCRIPT_DIR."
-    echo "Please create a virtual environment first."
-    exit 1
+    echo "INFO: 'venv' folder does not exist in $SCRIPT_DIR."
+    echo "Installing dependencies first..."
+    $SCRIPT_DIR/install.sh
 fi
 
 source "$VENV_DIR/bin/activate"

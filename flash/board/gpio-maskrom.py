@@ -1,27 +1,25 @@
-import RPi.GPIO as GPIO
+
+import lgpio
 import time
 import os
 
 # Pin configuration
-MOSFET_PIN = int(os.getenv('MOSFET_PIN', 11)) 
+# https://pinout.xyz/pinout/pin16_gpio23/
+# 
+MOSFET_PIN = int(os.getenv('MOSFET_PIN', 23)) 
 
 print("using pin: ", MOSFET_PIN)
 
+h = lgpio.gpiochip_open(0) 
+lgpio.gpio_claim_output(h, MOSFET_PIN)
 
-# GPIO setup
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(MOSFET_PIN, GPIO.OUT)
+lgpio.gpio_write(h, MOSFET_PIN, 1) 
+print('pressing maskrom button')
 
-try:
-    # Pull the maskrom pin to 0V (simulate button press)
-    GPIO.output(MOSFET_PIN, GPIO.HIGH)
-    print('pressing maskrom button')
-    time.sleep(4)  # Hold the button for 1 second
+time.sleep(4) 
+# time.sleep(4) 
+# time.sleep(4) 
 
-    
-    # Release the maskrom pin (simulate button release)
-    GPIO.output(MOSFET_PIN, GPIO.LOW)
-    print('releasing maskrom button')
-finally:
-    # Cleanup GPIO state
-    GPIO.cleanup()
+lgpio.gpio_write(h, MOSFET_PIN, 0) 
+print('releasing maskrom button')
+

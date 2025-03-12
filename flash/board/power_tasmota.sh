@@ -3,6 +3,12 @@ set -euo pipefail
 set -x
 readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
+#
+# Script to interact with a tasmota based IOT smart plug
+# https://tasmota.github.io/docs/
+#
+# Change endpoint accordingly if you dont use tasmota firmware
+#
 POWER_PLUG_HOST="${POWER_PLUG_HOST:-}"
 
 function do_request() {

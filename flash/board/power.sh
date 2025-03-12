@@ -2,8 +2,9 @@
 set -euo pipefail
 readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-USB=$SCRIPT_DIR/power_usb.sh
-PLUG=$SCRIPT_DIR/power_plug.sh
+# USB=$SCRIPT_DIR/power_usb.sh
+USB=$SCRIPT_DIR/power_usb_rpi5.sh
+PLUG=$SCRIPT_DIR/power_tasmota.sh
 
 set +u
 if [[ "$1" == "on" ]]; then
