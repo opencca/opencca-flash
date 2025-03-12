@@ -1,48 +1,69 @@
 #!/usr/bin/env bash
+#
+# Board control
+# This exposes all power and maskrom functionality
+#
 set -euo pipefail
 
 readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-BOARD_DIR=$SCRIPT_DIR
+readonly BOARD_POWER="$SCRIPT_DIR/power/power.sh"
+readonly BOARD_MASKROM="$SCRIPT_DIR/maskrom/maskrom.sh"
 
-BOARD_ON="$BOARD_DIR/power.sh on"
-BOARD_OFF="$BOARD_DIR/power.sh off"
-BOARD_MASKROM="$BOARD_DIR/maskrom.sh"
+function verbose_output {
+    GRAY='\033[90m'
+    RESET='\033[0m'
 
-function board_reboot {
-    bash $BOARD_OFF
-    sleep 1
-    bash $BOARD_ON
+    exec 3>&1 4>&2  # Save original stdout and stderr
+    exec > >(awk '{print "'"$GRAY"'" $0 "'"$RESET"'"}') 2>&1
 }
 
-function board_on {
-    bash $BOARD_ON
+function verbose_reset {
+    exec 1>&3 2>&4  # Restore original stdout and stderr
 }
 
 function board_off {
-    bash $BOARD_OFF
+    echo "Turning off board..."
+
+    verbose_output
+    bash "$BOARD_POWER" off
+    verbose_reset
 }
 
-function board_maskrom { 
-    bash $BOARD_MASKROM
+function board_on {
+    echo "Turning on board..."
+
+    verbose_output
+    bash "$BOARD_POWER" on
+    verbose_reset
 }
 
-set +u
+function board_reboot {
+    board_off
+    sleep 1
+    board_on
+}
 
-case "$1" in
-    on)            
-        board_on
-        ;;
-    off)            
-        board_off
-        ;;
-    reboot)            
-        board_reboot
-        ;;
-    maskrom)            
-        board_maskrom
-        ;;
-    *)
-        echo "Usage: $0 {on|off|reboot|maskrom}"
-esac
+function run_maskrom_sequence() {
+    board_off
 
+    echo "Pressing Maskrom button..."
+    
+    verbose_output
+    nohub bash "$BOARD_MASKROM" && verbose_reset &
 
+    sleep 2
+    board_on
+}
+
+function board_control() {
+    set +u
+    case "$1" in
+        on) board_on ;;
+        off) board_off ;;
+        reboot) board_reboot ;;
+        maskrom) run_maskrom_sequence ;;
+        *) echo "Usage: $0 {on|off|reboot|maskrom}" && exit 1 ;;
+    esac
+}
+
+board_control "$1"

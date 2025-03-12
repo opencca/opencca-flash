@@ -46,7 +46,7 @@ Functionality is implemented in simple bash scripts.
 
 ```
 # in .env file:
-export POWER_PLUG_HOST="http://192.168.100.11/cm"
+export OPENCCA_PLUG_URL="http://192.168.100.11/cm"
 ```
 
 ### USB Port
@@ -96,8 +96,8 @@ and uses hub 3-1 and port 5.
 
 ```
 # in .env file:
-export UHUBCTL_DEVICE="3-1"
-export UHUBCTL_PORT="5"
+export OPENCCA_USB_DEVICE="3-1"
+export OPENCCA_USB_PORT="5"
 ```
 
 ### GPIO Maskrom
@@ -115,6 +115,6 @@ Select the GPIO pin used.
 
 ```
 # in .env file:
-export MOSFET_PIN=11
+export OPENCCA_MASKROM_PIN=11
 ```
 

@@ -10,21 +10,19 @@ readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null 
 #
 
 function power_on() {  
-  sudo uhubctl -l 2 -a 1
-  sudo uhubctl -l 4 -a 1
+  sudo uhubctl -l 2 -a 1 || true
+  sudo uhubctl -l 4 -a 1 || true
 }
 
 function power_off() {
-  sudo uhubctl -l 2 -a 0
-  sudo uhubctl -l 4 -a 0
+  sudo uhubctl -l 2 -a 0 || true
+  sudo uhubctl -l 4 -a 0 || true
 }
 
 set +u
-if [[ "$1" == "on" ]]; then
-  power_on
-elif [[ "$1" == "off" ]]; then
-  power_off
-else
-  echo "Usage: $0 {on|off}"
-  exit 1
-fi
+case "$1" in
+    on)  power_on ;;
+    off) power_off ;;
+    *)   echo "Usage: $0 {on|off}"
+         exit 1;;
+esac

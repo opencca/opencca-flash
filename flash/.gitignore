@@ -6,3 +6,5 @@ flash.env
 minicom.txt
 .env
 env
+tools/log
+

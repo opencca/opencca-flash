@@ -4,26 +4,40 @@ set -euo pipefail
 readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 ROOT_DIR=$SCRIPT_DIR/
 
-SNAPSHOT_DEF=$ROOT_DIR/snapshot
-SNAPSHOT_DIR="${SNAPSHOT_DIR:-$SNAPSHOT_DEF}"
-RKDEVELOP_TOOL="${RKDEVELOP_TOOL:-sudo $ROOT_DIR/tools/rkdeveloptool}"
+function source_env {
+    if [[ -f "${SCRIPT_DIR}/.env" ]]; then
+        echo "Sourcing ${SCRIPT_DIR}/.env..."
+        source "${SCRIPT_DIR}/.env"
+    fi
+
+    echo -e "\033[34m======== OpenCCA ENV ========"
+    env | grep -v "LS_COLORS" | grep OPENCCA
+    echo -e "======== OpenCCA ENV ======== \033[0m"
+}
+
+# Source env for definitions
+source_env
+
+SNAPSHOT_DIR="${OPENCCA_SNAPSHOT_DIR:-$ROOT_DIR/snapshot}"
+RKDEVELOP_TOOL="${OPENCCA_RKDEVELOP_TOOL:-sudo $ROOT_DIR/tools/rkdeveloptool}"
+CMD=$RKDEVELOP_TOOL
+
 BOARD_CTRL=$SCRIPT_DIR/board/board.sh
 MINICOM_SCRIPT=$SCRIPT_DIR/minicom.sh
 
+function verbose_output {
+    GRAY='\033[90m'
+    RESET='\033[0m'
 
-if [[ -f "${SCRIPT_DIR}/.env" ]]; then
-    echo "Sourcing ${SCRIPT_DIR}/.env ..."
-    source "${SCRIPT_DIR}/.env"
-fi
+    exec 3>&1 4>&2 
+    exec > >(awk '{print "'"$GRAY"'" $0 "'"$RESET"'"}') 2>&1 
+    set -x
+}
 
-echo "======== ENV ========"
-env | grep -v "LS_COLORS"
-echo "======== ENV ========"
-
-
-readonly CMD=$RKDEVELOP_TOOL
-readonly CURR_DIRNAME=$(basename `pwd`)
-
+function verbose_reset {
+    set +x
+    exec 1>&3 2>&4
+}
 
 function board_reboot {
     $BOARD_CTRL off
@@ -103,14 +117,14 @@ function flash_spi {
     local cwd=$PWD
     wait_for_device_or_die
 
-
     cd $SNAPSHOT_DIR
-    
-    set -x
+    verbose_output
+
     transfer_loader
     $CMD wl 0 ./u-boot-rockchip-spi.bin 
     $CMD rd
-    
+
+    verbose_reset
     cd $cwd
 }
 
@@ -119,13 +133,14 @@ function flash_mmc {
     wait_for_device_or_die
 
     cd $SNAPSHOT_DIR
+    verbose_output
 
-    set -x
     transfer_loader
     $CMD wl 0x40 ./idbloader.img
     $CMD wl 0x4000 ./u-boot.itb
     $CMD rd
 
+    verbose_reset
     cd $cwd
 }
 
@@ -135,9 +150,12 @@ function clear_flash {
     wait_for_device_or_die
 
     cd $SNAPSHOT_DIR
-    set -x
+    verbose_output
+
     transfer_loader
     $CMD ef
+
+    verbose_reset
     cd $cwd
     
 }
@@ -147,11 +165,12 @@ function show_device {
     
     wait_for_device_or_die
     cd $SNAPSHOT_DIR
-    
-    set -x
+    verbose_output
+
     transfer_loader
     $CMD ld
 
+    verbose_reset
     cd $cwd
 }
 
@@ -172,9 +191,8 @@ function print_help() {
     echo "  help                  - Show this help message"
 }    
 
-
 set +u
-# "${@:2}"
+echo "Executing command: $1 ..."
 case "$1" in
     spi)
         flash_spi
@@ -187,7 +205,7 @@ case "$1" in
         ;;
     device)
         wait_for_device_or_die
-	$RKDEVELOP_TOOL ld
+	    $RKDEVELOP_TOOL ld
         ;;
    maskrom)
         show_device
