@@ -58,6 +58,3 @@ stop:
 .PHONY:
 wifi:
 	nmcli connection show
-
-.PHONY:
-clean:
