@@ -42,8 +42,8 @@ function run_maskrom_sequence() {
 
     echo "Pressing Maskrom button..."
     
-    verbose_output
-    nohub bash "$BOARD_MASKROM" && verbose_reset &
+    enable_verbose_output
+    nohub bash "$BOARD_MASKROM" && disable_verbose_output &
 
     sleep 2
     board_on
