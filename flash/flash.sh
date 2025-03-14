@@ -8,6 +8,9 @@ set -euo pipefail
 readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 ROOT_DIR=$SCRIPT_DIR/
 
+# Set to 1 to debug this script
+PRINT_DEBUG=0
+
 function source_env {
     if [[ -f "${SCRIPT_DIR}/.env" ]]; then
         echo "Sourcing ${SCRIPT_DIR}/.env..."
@@ -51,8 +54,8 @@ Commands:
 EOF
 }
 
-function cmd_board_on { $BOARD_CTRL on; }
-function cmd_board_off { $BOARD_CTRL off; }
+function cmd_board_on { echo "Turning on board..."; $BOARD_CTRL on; }
+function cmd_board_off { echo "Turning off board..."; $BOARD_CTRL off; }
 function cmd_board_reboot { cmd_board_off; sleep 1; cmd_board_on; }
 function cmd_board_maskrom { $BOARD_CTRL maskrom; }
 
@@ -63,74 +66,75 @@ function cmd_minicom_connect {
 }
 
 function cmd_flash_spi {
-    local cwd=$PWD
-
     wait_for_device_or_die
-    cd $SNAPSHOT_DIR
     enable_verbose_output
-
     transfer_loader
-    $CMD wl 0 ./u-boot-rockchip-spi.bin 
+
+    $CMD wl 0 $SNAPSHOT_DIR/u-boot-rockchip-spi.bin 
     $CMD rd
 
     disable_verbose_output
-    cd $cwd
 }
 
 function cmd_flash_mmc {
-    local cwd=$PWD
-
     wait_for_device_or_die
-    cd $SNAPSHOT_DIR
     enable_verbose_output
-
     transfer_loader
-    $CMD wl 0x40 ./idbloader.img
-    $CMD wl 0x4000 ./u-boot.itb
+
+    $CMD wl 0x40 $SNAPSHOT_DIR/idbloader.img
+    $CMD wl 0x4000 $SNAPSHOT_DIR/u-boot.itb
     $CMD rd
 
     disable_verbose_output
-    cd $cwd
 }
 
 function cmd_clear_flash {
-    local cwd=$PWD
-
     wait_for_device_or_die
-    cd $SNAPSHOT_DIR
     enable_verbose_output
-
     transfer_loader
+
     $CMD ef
 
     disable_verbose_output
-    cd $cwd
 }
 
-function cmd_show_device {
-    local cwd=$PWD
-    
+function cmd_show_device {    
     wait_for_device_or_die
-    cd $SNAPSHOT_DIR
     enable_verbose_output
-
     transfer_loader
 
     disable_verbose_output
     $CMD ld
-    cd $cwd
 }
 
 #
 # Helpers
 # 
+function disable_verbose_output { 
+    [[ "$PRINT_DEBUG" == "1" ]] && return
 
-function disable_verbose_output { set +x; exec 1>&3 2>&4; }
+    set +x
+    exec 1>&3 2>&4;
+}
+
 function enable_verbose_output {
-    GRAY='\033[90m'
-    RESET='\033[0m'
+    local GRAY='\033[90m'
+    local RED='\033[91m'
+    local GREEN='\033[92m'
+    local RESET='\033[0m'
+
+    [[ "$PRINT_DEBUG" == "1" ]] && return
+
     exec 3>&1 4>&2  # Save original stdout and stderr
-    exec > >(awk '{print "'"$GRAY"'" $0 "'"$RESET"'"}') 2>&1
+    exec > >(awk '{
+        line = $0;
+        if (tolower(line) ~ /(warn|error|fail)/) 
+            print "'"$RED"'" line "'"$RESET"'";
+        else if (tolower(line) ~ /(success|ok)/) 
+            print "'"$GREEN"'" line "'"$RESET"'";
+        else 
+            print "'"$GRAY"'" line "'"$RESET"'";
+    }') 2>&1
     set -x
 }
 
@@ -139,7 +143,7 @@ function is_in_maskrom { $CMD ld | grep -iq "maskrom"; }
 function enter_maskrom {
     if is_in_maskrom; then
         echo "Device already in Maskrom mode."
-        return 0
+        return
     fi
     cmd_board_maskrom
 }
@@ -165,7 +169,11 @@ function transfer_loader {
     local cwd=$PWD
 
     # Do not transfer loader if already transfered
-    if ! $CMD rid | grep -iq "failed"; then
+    if $CMD rcb | grep -q "Capability:"; then
+        # rcb command will succeed if maskrom dirver 
+        # already flashed. we will see something like:
+        #   Capability:2F 03 00 00 00 00 00 00 
+        #
         echo "Loader already transferred. Skipping."
         return 0
     fi
@@ -178,6 +186,7 @@ function transfer_loader {
 #
 # Main
 # 
+[[ "$PRINT_DEBUG" == "1" ]] && set -x
 set +u
 echo "Executing command: $1 ..."
 
