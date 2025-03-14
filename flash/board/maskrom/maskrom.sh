@@ -4,6 +4,7 @@ readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null 
 
 readonly VENV_DIR="$SCRIPT_DIR/venv"
 readonly INSTALL_SCRIPT="$SCRIPT_DIR/setup_python.sh"
+export PYTHONUNBUFFERED=1
 
 function setup_venv() {
     if [[ ! -d "$VENV_DIR" ]]; then
@@ -15,4 +16,5 @@ function setup_venv() {
 
 cd $SCRIPT_DIR
 setup_venv
-python maskrom.py
+echo "Running maskrom.py $@ ..."
+python maskrom.py $@

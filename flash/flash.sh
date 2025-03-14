@@ -9,7 +9,7 @@ readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null 
 ROOT_DIR=$SCRIPT_DIR/
 
 # Set to 1 to debug this script
-PRINT_DEBUG=0
+NO_COLOR=0
 
 function source_env {
     if [[ -f "${SCRIPT_DIR}/.env" ]]; then
@@ -54,10 +54,32 @@ Commands:
 EOF
 }
 
-function cmd_board_on { echo "Turning on board..."; $BOARD_CTRL on; }
-function cmd_board_off { echo "Turning off board..."; $BOARD_CTRL off; }
-function cmd_board_reboot { cmd_board_off; sleep 1; cmd_board_on; }
-function cmd_board_maskrom { $BOARD_CTRL maskrom; }
+function cmd_board_on { 
+    echo "Turning on board..."
+    enable_verbose_output
+    $BOARD_CTRL on
+    disable_verbose_output
+}
+
+function cmd_board_off {
+    echo "Turning off board..."
+    enable_verbose_output
+    $BOARD_CTRL off
+    disable_verbose_output
+}
+function cmd_board_reboot {
+    echo "Rebooting board..."
+    enable_verbose_output
+    $BOARD_CTRL reboot 
+    disable_verbose_output
+}
+
+function cmd_board_maskrom { 
+    echo "Entering Maskrom mode..."
+    enable_verbose_output
+    $BOARD_CTRL maskrom;
+    disable_verbose_output
+}
 
 function cmd_minicom_connect {
     echo "Launching minicom..."
@@ -110,33 +132,51 @@ function cmd_show_device {
 #
 # Helpers
 # 
-function disable_verbose_output { 
-    [[ "$PRINT_DEBUG" == "1" ]] && return
+function handle_error {
+    local RED='\033[91m'
+    local RESET='\033[0m'
 
-    set +x
-    exec 1>&3 2>&4;
+    echo -e "${RED}Error at line $LINENO: $BASH_COMMAND${RESET}" >&2
 }
+trap 'handle_error' ERR
 
 function enable_verbose_output {
+    [[ "$NO_COLOR" == "1" ]] && return
+    exec 3>&1 4>&2 
+    # Pipe output into process_output function
+    exec > >(format_output) 2>&1
+    set -x
+}
+
+function disable_verbose_output {
+    [[ "$NO_COLOR" == "1" ]] && return
+    set +x
+    # Restore original stdout and stderr
+    exec 1>&3 2>&4 
+}
+
+function format_output {
     local GRAY='\033[90m'
     local RED='\033[91m'
     local GREEN='\033[92m'
     local RESET='\033[0m'
 
-    [[ "$PRINT_DEBUG" == "1" ]] && return
+    while IFS= read -r l; do
+        # Convert to lowercase
+        line=$(echo "$l" | tr '[:upper:]' '[:lower:]') 
 
-    exec 3>&1 4>&2  # Save original stdout and stderr
-    exec > >(awk '{
-        line = $0;
-        if (tolower(line) ~ /(warn|error|fail)/) 
-            print "'"$RED"'" line "'"$RESET"'";
-        else if (tolower(line) ~ /(success|ok)/) 
-            print "'"$GREEN"'" line "'"$RESET"'";
-        else 
-            print "'"$GRAY"'" line "'"$RESET"'";
-    }') 2>&1
-    set -x
+        if [[ "$line" =~ (warn|error|fail|timeout|invalid) ]]; then
+            echo -e "${RED}${l}${RESET}"
+        elif [[ "$line" =~ (success|ok) ]]; then
+            echo -e "${GREEN}${l}${RESET}"
+        elif [[ "$line" =~ (info) ]]; then
+            echo -e "${RESET}${l}${RESET}"
+        else
+            echo -e "${GRAY}${l}${RESET}"
+        fi
+    done
 }
+
 
 function is_in_maskrom { $CMD ld | grep -iq "maskrom"; }
 
@@ -186,7 +226,7 @@ function transfer_loader {
 #
 # Main
 # 
-[[ "$PRINT_DEBUG" == "1" ]] && set -x
+[[ "$NO_COLOR" == "1" ]] && set -x
 set +u
 echo "Executing command: $1 ..."
 

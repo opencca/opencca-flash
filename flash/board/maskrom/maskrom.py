@@ -1,25 +1,39 @@
-
 import lgpio
 import time
 import os
+import sys
 
 # Pin configuration
 # https://pinout.xyz/pinout/pin16_gpio23/
 # 
-OPENCCA_MASKROM_PIN = int(os.getenv('OPENCCA_MASKROM_PIN', 23)) 
+OPENCCA_MASKROM_PIN = int(os.getenv('OPENCCA_MASKROM_PIN', 23))
 
-print("using pin: ", OPENCCA_MASKROM_PIN)
+def press_maskrom_button(handle, pin):
+    print('Press maskrom button (set pin HIGH)...')
+    lgpio.gpio_write(handle, pin, 1)
+    
+def release_maskrom_button(handle, pin):
+    print('Releasing maskrom button (set pin LOW)...')
+    lgpio.gpio_write(handle, pin, 0)
+    
+def usage():
+    print("Usage: script.py <press|release>")
+    sys.exit(1)
 
-h = lgpio.gpiochip_open(0) 
-lgpio.gpio_claim_output(h, OPENCCA_MASKROM_PIN)
+def main():
+    h = lgpio.gpiochip_open(0)
+    lgpio.gpio_claim_output(h, OPENCCA_MASKROM_PIN)
 
-lgpio.gpio_write(h, OPENCCA_MASKROM_PIN, 1) 
-print('pressing maskrom button')
+    if len(sys.argv) < 2:
+        usage()
 
-time.sleep(4) 
-# time.sleep(4) 
-# time.sleep(4) 
-
-lgpio.gpio_write(h, OPENCCA_MASKROM_PIN, 0) 
-print('releasing maskrom button')
-
+    command = sys.argv[1].strip().lower()
+    if command == "press":
+        press_maskrom_button(h, OPENCCA_MASKROM_PIN)
+    elif command == "release":
+        release_maskrom_button(h, OPENCCA_MASKROM_PIN)
+    else:
+        usage()
+    
+if __name__ == "__main__":
+    main()
