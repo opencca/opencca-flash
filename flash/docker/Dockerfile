@@ -12,7 +12,7 @@ RUN apt install -y emacs-nox nano vim sudo curl wget git \
     iproute2 net-tools dnsutils iputils-ping traceroute socat tcpdump nmap \
     build-essential cmake pkg-config gdb gdb-multiarch strace  \
     python3 python3-pip python3-venv python3-dev
-RUN apt install -y usbutils udev libusb-1.0-0-dev  
+RUN apt install -y usbutils udev libusb-1.0-0-dev coreutils
 RUN apt install -y minicom screen picocom
 
 RUN ln -s /usr/bin/python3 /usr/bin/python || true
