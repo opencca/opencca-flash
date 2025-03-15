@@ -192,7 +192,7 @@ function wait_for_device_or_die {
     local timeout=60
     local start_time=$(date +%s)
 
-    enter_maskrom
+    enter_maskrom &
 
     while ! is_in_maskrom; do
      local elapsed_time=$(( $(date +%s) - start_time ))
@@ -201,7 +201,7 @@ function wait_for_device_or_die {
             exit 1
         fi
         echo "Waiting for device to enter Maskrom mode... ($elapsed_time/$timeout)"
-        sleep 0.5
+        sleep 1
     done
 }
 
@@ -243,6 +243,6 @@ case "$1" in
         wait_for_device_or_die
         $CMD ld
         ;;
-    rkdeveloptool) $CMD "${@:2}" ;;
+    tool) $CMD "${@:2}" ;;
     *) cmd_print_help ;;
 esac
