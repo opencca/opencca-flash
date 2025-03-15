@@ -1,3 +1,4 @@
+#!/bin/bash
 set -euo pipefail
 
 readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
@@ -8,7 +9,7 @@ export PYTHONUNBUFFERED=1
 
 function setup_venv() {
     if [[ ! -d "$VENV_DIR" ]]; then
-        echo "INFO: 'venv' folder does not exist. Installing dependencies..."
+        echo "INFO: 'venv' folder does not exist. Installing dependencies... into $VENV_DIR"
         bash "$INSTALL_SCRIPT"
     fi
     source "$VENV_DIR/bin/activate"
