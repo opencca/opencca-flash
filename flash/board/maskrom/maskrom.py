@@ -9,11 +9,11 @@ import sys
 OPENCCA_MASKROM_PIN = int(os.getenv('OPENCCA_MASKROM_PIN', 23))
 
 def press_maskrom_button(handle, pin):
-    print('Press maskrom button (set pin HIGH)...')
+    print(f'Press maskrom button (set pin ${OPENCCA_MASKROM_PIN} HIGH)...')
     lgpio.gpio_write(handle, pin, 1)
     
 def release_maskrom_button(handle, pin):
-    print('Releasing maskrom button (set pin LOW)...')
+    print(f'Releasing maskrom button (set pin ${OPENCCA_MASKROM_PIN} LOW)...')
     lgpio.gpio_write(handle, pin, 0)
     
 def usage():

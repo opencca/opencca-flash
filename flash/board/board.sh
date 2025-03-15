@@ -28,7 +28,6 @@ function run_maskrom_sequence() {
 }
 
 function board_control() {
-    set +u
     case "$1" in
         on) board_on ;;
         off) board_off ;;
@@ -38,4 +37,4 @@ function board_control() {
     esac
 }
 
-board_control "$1"
+board_control "${1:-}"
