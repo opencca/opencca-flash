@@ -21,4 +21,4 @@ pu rtscts           No
 CMD
 
 
-minicom -w -t xterm -l -R UTF-8 -D $OPENCCA_TTYUSB rock5 -C $SCRIPT_DIR/minicom.txt
+minicom -w -t xterm -l -R UTF-8 -D $OPENCCA_TTYUSB rock5 -C $SCRIPT_DIR/minicom.txt -o

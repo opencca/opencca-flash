@@ -9,12 +9,17 @@ set -euo pipefail
 #
 
 OPENCCA_PLUG_URL="${OPENCCA_PLUG_URL:-}"
+OPENCCA_PLUG_URL_BASIC_AUTH="${OPENCCA_PLUG_URL_BASIC_AUTH:-}"
 
 function do_request() {
     local url="$1"
     local response
-    response=$(curl -s -o /dev/null -w "%{http_code}" "$url")
+    local auth=""
+    [[ -z "$OPENCCA_PLUG_URL_BASIC_AUTH" ]] || auth="-u $OPENCCA_PLUG_URL_BASIC_AUTH"
     echo "Request: $url"
+
+    response=$(curl -s -o /dev/null -w "%{http_code}" \
+                --connect-timeout 5 -m 10 $auth "$url") || true
 
     if [[ "$response" -ne 200 ]]; then
         echo "Error: Failed to connect to $url. Status code=$response"

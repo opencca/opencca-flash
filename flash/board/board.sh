@@ -22,7 +22,6 @@ function run_maskrom_sequence() {
 }
 
 function board_control() {
-    set +u
     case "$1" in
         off|on|reboot) board_power $1 ;;
         maskrom) run_maskrom_sequence ;;
@@ -30,4 +29,4 @@ function board_control() {
     esac
 }
 
-board_control "$1"
+board_control "${1:-}"

@@ -9,7 +9,7 @@ readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null 
 ROOT_DIR=$SCRIPT_DIR/
 
 # Set to 1 to debug this script
-NO_COLOR=0
+NO_COLOR=1
 
 function source_env {
     if [[ -f "${SCRIPT_DIR}/.env" ]]; then

@@ -10,3 +10,5 @@ tools/log
 
 .env*
 env*
+snapshot/*
+snapshot/.*
