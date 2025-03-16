@@ -9,7 +9,8 @@ readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null 
 ROOT_DIR=$SCRIPT_DIR/
 
 # Set to 1 to debug this script
-NO_COLOR=1
+NO_COLOR=0
+DEBUG=0
 
 function source_env {
     if [[ -f "${SCRIPT_DIR}/.env" ]]; then
@@ -33,6 +34,10 @@ CMD=$RKDEVELOP_TOOL
 BOARD_CTRL=$SCRIPT_DIR/board/board.sh
 MINICOM_SCRIPT=$SCRIPT_DIR/minicom.sh
 
+FLASH_MMC_IDBLOADER=$SNAPSHOT_DIR/idbloader.img
+FLASH_MMC_UBOOT=$SNAPSHOT_DIR/u-boot.itb
+FLASH_SPI_BIN=$SNAPSHOT_DIR/u-boot-rockchip-spi.bin 
+
 #
 # Commands
 # 
@@ -49,7 +54,7 @@ Commands:
   off                   - Power off the board
   reboot                - Reboot the board
   minicom               - Connect to board with ttyusb
-  rkdeveloptool <args>  - Run rkdeveloptool with custom arguments
+  tool <args>           - Run rkdeveloptool with arguments
   help                  - Show this help message
 EOF
 }
@@ -92,7 +97,7 @@ function cmd_flash_spi {
     enable_verbose_output
     transfer_loader
 
-    $CMD wl 0 $SNAPSHOT_DIR/u-boot-rockchip-spi.bin 
+    $CMD wl 0 $FLASH_SPI_BIN
     $CMD rd
 
     disable_verbose_output
@@ -103,8 +108,8 @@ function cmd_flash_mmc {
     enable_verbose_output
     transfer_loader
 
-    $CMD wl 0x40 $SNAPSHOT_DIR/idbloader.img
-    $CMD wl 0x4000 $SNAPSHOT_DIR/u-boot.itb
+    $CMD wl 0x40 $FLASH_MMC_IDBLOADER
+    $CMD wl 0x4000 $FLASH_MMC_UBOOT
     $CMD rd
 
     disable_verbose_output
@@ -127,6 +132,15 @@ function cmd_show_device {
 
     disable_verbose_output
     $CMD ld
+}
+
+function cmd_rkdeveloptool {    
+    wait_for_device_or_die
+    enable_verbose_output
+    transfer_loader
+
+    disable_verbose_output
+    $CMD "${@}"
 }
 
 #
@@ -163,11 +177,11 @@ function format_output {
 
     while IFS= read -r l; do
         # Convert to lowercase
-        line=$(echo "$l" | tr '[:upper:]' '[:lower:]') 
+        line=$(echo "$l" | tr '[:upper:]' '[:lower:]')  
 
         if [[ "$line" =~ (warn|error|fail|timeout|invalid) ]]; then
             echo -e "${RED}${l}${RESET}"
-        elif [[ "$line" =~ (success|ok) ]]; then
+        elif [[ "$line" =~ (success|ok|succ) ]]; then
             echo -e "${GREEN}${l}${RESET}"
         elif [[ "$line" =~ (info) ]]; then
             echo -e "${RESET}${l}${RESET}"
@@ -226,7 +240,7 @@ function transfer_loader {
 #
 # Main
 # 
-[[ "$NO_COLOR" == "1" ]] && set -x
+[[ "$DEBUG" == "1" ]] && set -x
 set +u
 echo "Executing command: $1 ..."
 
@@ -243,6 +257,6 @@ case "$1" in
         wait_for_device_or_die
         $CMD ld
         ;;
-    tool) $CMD "${@:2}" ;;
+    tool) cmd_rkdeveloptool "${@:2}" ;;
     *) cmd_print_help ;;
 esac

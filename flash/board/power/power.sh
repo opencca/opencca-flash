@@ -4,6 +4,7 @@ readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null 
 
 USB="${OPENCCA_USB_SCRIPT:-power_usb_gerneic.sh}"
 PLUG="${OPENCCA_PLUG_SCRIPT:-power_plug_tasmota.sh}"
+POWER_REBOOT_DELAY="${OPENCCA_POWER_REBOOT_DELAY:-3}"
 
 cd $SCRIPT_DIR
 
@@ -26,7 +27,11 @@ function power_off() {
 
 function power_reboot() {
     power_off
-    sleep 1
+
+    # XXX: Depending on the usb dock, we may have to sleep longer
+    #      because power is cut in a delayed matter.
+    sleep $POWER_REBOOT_DELAY
+    
     power_on
 }
 

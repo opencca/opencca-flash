@@ -4,7 +4,7 @@
 # ./run.sh: ..........Enter container
 # ./run.sh <command>: execute command right away
 #
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 set -euo pipefail
 
 PROJ_DIR=$SCRIPT_DIR/../../
