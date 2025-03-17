@@ -9,15 +9,21 @@ readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null 
 readonly BOARD_POWER="$SCRIPT_DIR/power/power.sh"
 readonly BOARD_MASKROM="$SCRIPT_DIR/maskrom/maskrom.sh"
 
-function board_power { bash "$BOARD_POWER" $1; }
+function board_power { 
+    # XXX: Ensure that button is never pressed upon
+    #      power change.
+    bash "$BOARD_MASKROM" release
+
+    bash "$BOARD_POWER" $1;    
+}
 
 function run_maskrom_sequence() {
     echo "Pressing Maskrom button..."
     bash "$BOARD_MASKROM" press
 
-    board_power reboot
+    bash "$BOARD_POWER" reboot;
 
-    sleep 7 
+    sleep 6
     bash "$BOARD_MASKROM" release
 }
 
@@ -25,7 +31,7 @@ function board_control() {
     case "$1" in
         off|on|reboot) board_power $1 ;;
         maskrom) run_maskrom_sequence ;;
-        *) echo "Usage: $0 {on|off|reboot|maskrom}" && exit 1 ;;
+        *) echo "Usage: $0 {on|off|reboot|maskrom}" && exit 0 ;;
     esac
 }
 
