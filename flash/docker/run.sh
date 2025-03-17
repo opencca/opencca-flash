@@ -35,9 +35,9 @@ docker run \
 
 docker start $NAME || true
 
-CMD=${@:-}
-if [ -z "$CMD" ]; then
-    docker attach $NAME
-else
-    docker exec -it $NAME $CMD
-fi
+CMD=${@:-/bin/bash}
+# if [ -z "$CMD" ]; then
+#     docker attach $NAME
+# else
+docker exec -it $NAME $CMD
+# fi
