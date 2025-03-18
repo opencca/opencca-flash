@@ -1,4 +1,7 @@
-DOCKER_COMPOSE = docker compose
+# we use same makefile in root and ./docker
+DOCKER_DIR := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
+
+DOCKER_COMPOSE = docker compose -f $(DOCKER_DIR)/docker-compose.yml
 SERVICE = opencca-flash
 SRC_DIR = /opencca
 SHELL_HISTORY = .bash_history .fish_history
