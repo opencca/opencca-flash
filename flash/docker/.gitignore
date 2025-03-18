@@ -1,2 +1,5 @@
 .bash_history
 .fish_history
+.cache
+tmp
+build

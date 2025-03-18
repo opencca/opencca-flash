@@ -6,7 +6,7 @@ ENV IN_CONTAINER=1
 # opencca flash server packages
 #
 
-RUN apt update -y
+RUN apt update -y 
 RUN apt install -y build-essential autoconf automake libtool
 RUN apt install -y emacs-nox nano vim sudo curl wget git \
     unzip htop tmux screen bash-completion lsof fish tmux bash \

@@ -9,7 +9,7 @@ readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null 
 ROOT_DIR=$SCRIPT_DIR/
 
 # Set to 1 to debug this script
-NO_COLOR=1
+NO_COLOR=0
 DEBUG=0
 
 function source_env {
@@ -158,7 +158,8 @@ function enable_verbose_output {
     [[ "$NO_COLOR" == "1" ]] && return
     exec 3>&1 4>&2 
     # Pipe output into process_output function
-    exec > >(format_output) 2>&1
+    # exec > >(format_output) 2>&1
+    exec > >(tee /dev/fd/3 | format_output) 2> >(tee /dev/fd/4 | format_output)
     set -x
 }
 
@@ -174,6 +175,7 @@ function format_output {
     local RED='\033[91m'
     local GREEN='\033[92m'
     local RESET='\033[0m'
+    local MAGENTA='\e[35m'
 
     while IFS= read -r l; do
         # Convert to lowercase
@@ -186,7 +188,7 @@ function format_output {
         elif [[ "$line" =~ (info) ]]; then
             echo -e "${RESET}${l}${RESET}"
         else
-            echo -e "${GRAY}${l}${RESET}"
+            echo -e "${RESET}${l}${RESET}"
         fi
     done
 }

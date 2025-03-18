@@ -10,6 +10,8 @@ services:
     hostname: opencca-flash
     privileged: true
     network_mode: "host"
+    extra_hosts:
+      - "opencca-flash:127.0.0.1"
     volumes:
       - ../../:/opencca # project root
       - /dev:/dev
