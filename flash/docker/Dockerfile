@@ -1,5 +1,6 @@
 FROM debian:bookworm
 ENV DEBIAN_FRONTEND=noninteractive
+ENV IN_CONTAINER=1
 
 #
 # opencca flash server packages

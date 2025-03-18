@@ -4,7 +4,8 @@ DOCKER_DIR := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 DOCKER_COMPOSE = docker compose -f $(DOCKER_DIR)/docker-compose.yml
 SERVICE = opencca-flash
 SRC_DIR = /opencca
-SHELL_HISTORY = .bash_history .fish_history
+SHELL_HISTORY = $(DOCKER_DIR)/.bash_history $(DOCKER_DIR)/.fish_history
+SHELL := /bin/bash
 
 .PHONY: help
 help:
@@ -44,12 +45,12 @@ clean:
 	docker rm -f $(SERVICE) || true
 	docker volume rm $$(docker volume ls -qf dangling=true) || true
 
+# XXX: IN_CONTAINER set in dockerfile
 .PHONY: flash
-flash:
-	@if grep -q docker /proc/1/cgroup; then \
+flash:	
+	@if [ "$$IN_CONTAINER" = "1" ]; then \
 		flash.sh $(filter-out $@,$(MAKECMDGOALS)); \
 	else \
-		echo "Not inside the container, starting container first"; \
 		$(DOCKER_COMPOSE) run --rm $(SERVICE) flash.sh $(filter-out $@,$(MAKECMDGOALS)); \
 	fi
 
