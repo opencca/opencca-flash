@@ -16,6 +16,7 @@ services:
       - ~/.ccache:/root/.ccache  # Mount ccache directory
       - .bash_history:/root/.bash_history  # Persist Bash history
       - .fish_history:/root/.local/share/fish/fish_history  # Persist Fish history
+      - .cache/:/root/.cache
 
     environment:
       - CCACHE_DIR=/root/.ccache
