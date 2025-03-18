@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  opencca-flash:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    image: opencca-flash:latest
+    container_name: opencca-flash
+    hostname: opencca-flash
+    privileged: true
+    network_mode: "host"
+    volumes:
+      - ../../:/opencca # project root
+      - /dev:/dev
+      - ~/.ccache:/root/.ccache  # Mount ccache directory
+      - .bash_history:/root/.bash_history  # Persist Bash history
+      - .fish_history:/root/.local/share/fish/fish_history  # Persist Fish history
+
+    environment:
+      - CCACHE_DIR=/root/.ccache
+
+    working_dir: /opencca/flash
+    stdin_open: true
+    tty: true    

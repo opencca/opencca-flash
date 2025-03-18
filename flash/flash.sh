@@ -9,7 +9,7 @@ readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null 
 ROOT_DIR=$SCRIPT_DIR/
 
 # Set to 1 to debug this script
-NO_COLOR=0
+NO_COLOR=1
 DEBUG=0
 
 function source_env {
@@ -18,7 +18,7 @@ function source_env {
         source "${SCRIPT_DIR}/.env"
     fi
     echo -e "\033[34m======== OpenCCA ENV ========"
-    env | grep -v "LS_COLORS" | grep OPENCCA | sort
+    env | grep -v "LS_COLORS" | grep OPENCCA | sort || echo "No .env file"
     echo -e "======== OpenCCA ENV ======== \033[0m"
 }
 

@@ -4,8 +4,22 @@ set -euo pipefail
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 set -x
+
 DEV=/dev/ttyUSB0
 OPENCCA_TTYUSB="${OPENCCA_TTYUSB:-$DEV}"
+LOCK_FILE="/var/lock/LCK..$(basename "$OPENCCA_TTYUSB")"
+
+if pgrep -x "minicom" > /dev/null; then
+    echo "Existing Minicom session detected. Killing..."
+    pkill -x minicom
+    sleep 1 
+fi
+
+if [ -f "$LOCK_FILE" ]; then
+    echo "Removing stale lock file: $LOCK_FILE"
+    sudo rm -f "$LOCK_FILE"
+fi
+
 #
 # XXX: Write to user directory is ugly, we leave it as is for now
 #
@@ -21,4 +35,4 @@ pu rtscts           No
 CMD
 
 
-minicom -w -t xterm -l -R UTF-8 -D $OPENCCA_TTYUSB rock5 -C $SCRIPT_DIR/minicom.txt -o
+minicom -w -t xterm -l -R UTF-8 -D $OPENCCA_TTYUSB rock5 -C $SCRIPT_DIR/minicom.txt
