@@ -11,4 +11,6 @@ tools/log
 .env*
 env*
 snapshot/*
-snapshot/.*
+snapshot/.*.
+sytex25_parse_pmu.py
+tmp-backup

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-
+TMPFILE=/tmp/$0.log
 #
 # On rpi5, there is no individual power management.
 # We can only disable all together.
@@ -10,14 +10,16 @@ readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null 
 #
 
 function power_on() {  
-  sudo uhubctl -l 2 -a 1 || true
-  sudo uhubctl -l 4 -a 1 || true
+  sudo uhubctl -l 2 -a 1 2>&1 >> $TMPFILE || true
+  sudo uhubctl -l 4 -a 1 2>&1 >> $TMPFILE || true
 }
 
 function power_off() {
-  sudo uhubctl -l 2 -a 0 || true
-  sudo uhubctl -l 4 -a 0 || true
+  sudo uhubctl -l 2 -a 0 2>&1 >> $TMPFILE  || true
+  sudo uhubctl -l 4 -a 0 2>&1 >> $TMPFILE  || true
 }
+
+# echo "$0: Using logfile $TMPFILE"
 
 set +u
 case "$1" in
