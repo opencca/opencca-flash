@@ -9,8 +9,8 @@ readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null 
 ROOT_DIR=$SCRIPT_DIR/
 
 # Set to 1 to debug this script
-NO_COLOR=0
-DEBUG=0
+NO_COLOR=${OPENCCA_NO_COLOR:-0}
+DEBUG=${OPENCCA_DEBUG:-0}
 
 function source_env {
     if [[ -f "${SCRIPT_DIR}/.env" ]]; then
