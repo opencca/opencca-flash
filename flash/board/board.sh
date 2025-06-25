@@ -9,6 +9,8 @@ readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null 
 readonly BOARD_POWER="$SCRIPT_DIR/power/power.sh"
 readonly BOARD_MASKROM="$SCRIPT_DIR/maskrom/maskrom.sh"
 
+OPENCCA_MASKROM_RELEASE_DELAY="${OPENCCA_MASKROM_RELEASE_DELAY:-3}"
+
 function board_power { 
     # XXX: Ensure that button is never pressed upon
     #      power change.
@@ -23,7 +25,7 @@ function run_maskrom_sequence() {
 
     bash "$BOARD_POWER" reboot;
 
-    sleep 6
+    sleep $OPENCCA_MASKROM_RELEASE_DELAY
     bash "$BOARD_MASKROM" release
 }
 
