@@ -4,6 +4,7 @@ DOCKER_DIR := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 DOCKER_COMPOSE = docker compose -f $(DOCKER_DIR)/docker-compose.yml
 SERVICE = opencca-flash
 SRC_DIR = /opencca
+FLASH_DIR = $(SRC_DIR)/flash/
 SHELL_HISTORY = $(DOCKER_DIR)/.bash_history $(DOCKER_DIR)/.fish_history
 SHELL := /bin/bash
 
@@ -49,9 +50,9 @@ clean:
 .PHONY: flash
 flash:	
 	@if [ "$$IN_CONTAINER" = "1" ]; then \
-		flash.sh $(filter-out $@,$(MAKECMDGOALS)); \
+		$(FLASH_DIR)/flash.sh $(filter-out $@,$(MAKECMDGOALS)); \
 	else \
-		$(DOCKER_COMPOSE) run --rm $(SERVICE) flash.sh $(filter-out $@,$(MAKECMDGOALS)); \
+		$(DOCKER_COMPOSE) run --rm $(SERVICE) $(FLASH_DIR)/flash.sh $(filter-out $@,$(MAKECMDGOALS)); \
 	fi
 
 # Allow make to handle non-declared arguments
