@@ -1,1 +1,1 @@
-# Power Management for RK3588
+Power Management for RK3588
