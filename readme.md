@@ -16,7 +16,7 @@ Based on the [Radxa Maskrom Guide](https://docs.radxa.com/en/rock5/rock5b/low-le
 
 ### Boot Media
 
-Boot options: eMMC, microSD, NVMe. We mainly tested eMMC using [this chip](#).  
+Boot options: eMMC, microSD, NVMe. We mainly tested eMMC using [this chip](https://de.aliexpress.com/item/1005007003959424.html?spm=a2g0o.order_list.order_list_main.35.4f2418023Ja2xZ&gatewayAdapt=glo2deu). 
 
 ### Enter Maskrom Mode
 
@@ -26,14 +26,14 @@ Boot options: eMMC, microSD, NVMe. We mainly tested eMMC using [this chip](#).
 
 ### Flashing from Release
 
-Use either your own build or a prebuilt image.
+Use either [your own build](https://github.com/opencca/opencca-build/) or a prebuilt image.
 
 ```bash
-# Example (systex25 version):
+# Example (prebuilt systex25 version):
 wget https://github.com/opencca/opencca-releases/releases/download/opencca/systex25/opencca.tar.gz
 tar -xzf opencca.tar.gz
 ```
-### Flash steps:
+### Flash steps
 
 Flash the rootfile system along with the firmware onto the board.
 
