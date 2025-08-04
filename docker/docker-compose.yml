@@ -1,9 +1,13 @@
 services:
-  opencca-flash:
+  opencca-flash:  # XXX: Must match SERVICE name in Makefile
     build:
       context: ../
       dockerfile: docker/Dockerfile
-    image: opencca-flash:latest
+      args:
+        BUILD_DATE: ${BUILD_DATE}
+        BUILD_REF: ${BUILD_REF}
+        BUILD_VERSION: ${BUILD_VERSION}
+    image: ghcr.io/opencca/opencca-flash:latest # XXX: Must match SERVICE_URL in Makefile
     container_name: opencca-flash
     hostname: opencca-flash
     privileged: true
@@ -21,6 +25,6 @@ services:
     environment:
       - CCACHE_DIR=/root/.ccache
 
-    working_dir: /opencca/flash
+    working_dir: /opencca/opencca-flash
     stdin_open: true
     tty: true    

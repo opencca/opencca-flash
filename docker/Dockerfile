@@ -2,6 +2,10 @@ FROM debian:bookworm
 ENV DEBIAN_FRONTEND=noninteractive
 ENV IN_CONTAINER=1
 
+# Default ARGs injected by Docker buildx
+ARG TARGETARCH
+COPY tools/rkdeveloptool-${TARGETARCH} /usr/bin/rkdeveloptool
+
 #
 # opencca flash server packages
 #
@@ -34,5 +38,22 @@ ENV PATH="/opencca/flash/snapshot:$PATH"
 ENV PATH="/opencca/flash/tools:$PATH"
 
 RUN  git config --global --add safe.directory "*"
+
+# For CI build
+ARG BUILD_DATE=none
+ARG BUILD_REF=unknown
+ARG BUILD_VERSION=none
+
+# Labels
+LABEL org.opencontainers.image.title="opencca-flash"
+LABEL org.opencontainers.image.description="Flash Environment for OpenCCA."
+LABEL org.opencontainers.image.vendor="OpenCCA"
+LABEL org.opencontainers.image.authors="Andrin Bertschi <hi@abertschi.ch>"
+LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.url="https://opencca.github.io"
+LABEL org.opencontainers.image.source="https://github.com/opencca/opencca-flash"
+LABEL org.opencontainers.image.created="${BUILD_DATE}"
+LABEL org.opencontainers.image.revision="${BUILD_REF}"
+LABEL org.opencontainers.image.version="${BUILD_VERSION}"
 
 CMD ["/bin/bash"]
