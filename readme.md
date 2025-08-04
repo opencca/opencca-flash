@@ -9,7 +9,7 @@ Based on the [Radxa Maskrom Guide](https://docs.radxa.com/en/rock5/rock5b/low-le
 >[!IMPORTANT]
 > The ROCK 5B uses USB-C Power Delivery (PD) for power, but **PD negotiation often happens too late**, causing **infinite reboot loops**.
 > 
-> We use a [Anker PowerExpand 6-in-1]() and a [Anker Nano II](https://www.amazon.de/dp/B094QKV6S8).  
+> We use a [Anker PowerExpand 6-in-1](https://www.amazon.de/dp/B08CKXNJZS) and a [Anker Nano II](https://www.amazon.de/dp/B094QKV6S8).  
 > Detailed info and compatibility list: [Radxa ROCK 5B Power Supply Info](https://wiki.radxa.com/Rock5/rock5b/powersupply).  
 
 
