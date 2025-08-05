@@ -53,7 +53,7 @@ sudo rkdeveloptool rd
 ```
 
 The system now reboots and boots into a debian root file system.
-(Username user, password: user).
+(Username: user, password: user).
 
 ```
 Linux opencca-rock5b-rk3588 6.12.0-opencca-wip #wip SMP PREEMPT Thu Jul 31 08:44:48 UTC 2025 aarch64
