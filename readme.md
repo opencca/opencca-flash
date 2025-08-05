@@ -52,7 +52,28 @@ sudo rkdeveloptool wl 0 opencca-image-rockchip-rock5b-rk3588.img
 sudo rkdeveloptool rd
 ```
 
-**Update Firmware:**
+The system now reboots and boots into a debian root file system.
+(Username user, password: user).
+
+```
+Linux opencca-rock5b-rk3588 6.12.0-opencca-wip #wip SMP PREEMPT Thu Jul 31 08:44:48 UTC 2025 aarch64
+  ___                    ____ ____    _    
+ / _ \ _ __   ___ _ __  / ___/ ___|  / \   
+| | | | '_ \ / _ \ '_ \| |  | |     / _ \  
+| |_| | |_) |  __/ | | | |__| |___ / ___ \ 
+ \___/| .__/ \___|_| |_|\____\____/_/   \_\
+      |_|                                  
+user@opencca-rock5b-rk3588:~$ 
+```
+Run the `run_realm_vm.sh` script located in the home directory to run a realm VM.
+
+```
+user@opencca-rock5b-rk3588:~$ ./run_realm_vm.sh
+```
+
+**Update Firmware:**  
+To install a modified version of TF-A, RMM or U-Boot, run the following steps;
+
 ```sh
 # 1. enter maskrom mode (press buttons)
 
