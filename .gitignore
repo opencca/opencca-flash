@@ -8,8 +8,12 @@ minicom.txt
 env
 tools/log
 
+
 .env*
 env*
+# dont ignore template
+!.env.template
+
 snapshot/*
 snapshot/.*.
 sytex25_parse_pmu.py
