@@ -37,7 +37,7 @@ tar -xzf opencca.tar.gz
 ```
 ### Flash steps
 
-Flash the rootfile system along with the firmware onto the board. The image is configured to build from eMMC.
+Flash the rootfile system along with the firmware onto the board. The image is configured to boot from eMMC.
 
 **Initial Flash with Root FS:**
 
