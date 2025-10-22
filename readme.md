@@ -18,7 +18,7 @@ Based on the [Radxa Maskrom Guide](https://docs.radxa.com/en/rock5/rock5b/low-le
 
 ### Boot Media
 
-Boot options: eMMC, microSD, NVMe. We mainly tested eMMC using [this chip](https://de.aliexpress.com/item/1005007003959424.html?spm=a2g0o.order_list.order_list_main.35.4f2418023Ja2xZ&gatewayAdapt=glo2deu). 
+Boot options: eMMC, microSD, NVMe. The built rootfs is set up to boot from eMMC. We used this [this chip](https://de.aliexpress.com/item/1005007003959424.html?spm=a2g0o.order_list.order_list_main.35.4f2418023Ja2xZ&gatewayAdapt=glo2deu). 
 
 ### Enter Maskrom Mode
 
@@ -37,7 +37,7 @@ tar -xzf opencca.tar.gz
 ```
 ### Flash steps
 
-Flash the rootfile system along with the firmware onto the board.
+Flash the rootfile system along with the firmware onto the board. The image is configured to build from eMMC.
 
 **Initial Flash with Root FS:**
 
@@ -47,7 +47,7 @@ Flash the rootfile system along with the firmware onto the board.
 # 2. flash SPL loader to interact with board
 sudo rkdeveloptool db rk3588_spl_loader_v1.08.111.bin
 
-# 3. flash paritions
+# 3. flash partitions
 sudo rkdeveloptool wl 0 opencca-image-rockchip-rock5b-rk3588.img
 
 # 4. Reboot
