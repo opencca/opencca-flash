@@ -3,9 +3,6 @@
 This repo provides scripts to simplify the flashing process for the OpenCCA board.  You can either reuse the scripts or follow the manual steps below.
 
 ## Manual Flashing
-
-Based on the [Radxa Maskrom Guide](https://docs.radxa.com/en/rock5/rock5b/low-level-dev/maskrom/linux).
-
 >[!IMPORTANT]
 > The ROCK 5B uses USB-C Power Delivery (PD) for power, but **PD negotiation often happens too late**, causing **infinite reboot loops**.
 > 
@@ -14,7 +11,7 @@ Based on the [Radxa Maskrom Guide](https://docs.radxa.com/en/rock5/rock5b/low-le
 >
 > We recommend the 16 GB Version of the [Rock 5b](https://de.aliexpress.com/item/1005007507141308.html?spm=a2g0o.order_detail.order_detail_item.3.4e1d6368VO4dVf&gatewayAdapt=glo2deu).
 
-
+More information on flashing, development, and serial console in Radxa documents [Getting Started](https://wiki2.radxa.com/Rock5/5b/getting_started), [Rock 5B](https://docs.radxa.com/en/rock5/rock5b).
 
 ### Boot Media
 
