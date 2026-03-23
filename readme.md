@@ -66,6 +66,8 @@ $ tree
 
 </details>
 
+For the next step, you will need the `opencca-image-rockchip-rock5b-rk3588.img` image file. You obtain it either by downloading a pre-built version or by building it yourself.
+
 ### Flash steps
 
 Flash the root file system along with the firmware onto the board. The image is configured to boot from eMMC.
@@ -80,7 +82,6 @@ Flash the root file system along with the firmware onto the board. The image is 
 sudo rkdeveloptool db rk3588_spl_loader_v1.08.111.bin
 
 # 3. Flash partitions
-# Download *.img from release download
 sudo rkdeveloptool wl 0 opencca-image-rockchip-rock5b-rk3588.img
 
 # 4. Reboot
