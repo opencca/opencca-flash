@@ -32,6 +32,40 @@ Use either [your own build](https://github.com/opencca/opencca-build/) or a preb
 wget https://github.com/opencca/opencca-releases/releases/download/opencca/systex25/opencca.tar.gz
 tar -xzf opencca.tar.gz
 ```
+<details>
+  <summary>See contents of opencca.tar.gz </summary>
+  
+```
+$ tree 
+├── bl31.elf
+├── idbloader.img
+├── linux
+│   ├── Image
+│   ├── linux-headers-6.12.0-opencca-wip_6.12.0-opencca-wip_arm64.deb
+│   ├── linux-image-6.12.0-opencca-wip_6.12.0-opencca-wip_arm64.deb
+│   ├── linux-image-6.12.0-opencca-wip-dbg_6.12.0-opencca-wip_arm64.deb
+│   ├── linux-libc-dev_6.12.0-opencca-wip_arm64.deb
+│   └── rk3588-kernel-config
+├── lkvm
+├── rk3588_ddr_lp4_2112MHz_lp5_2736MHz_v1.08.bin
+├── rootfs
+│   └── opencca-image-rockchip-rock5b-rk3588.img
+├── tf-rmm.elf
+├── tools
+│   ├── rk3588_spl_loader_v1.08.111.bin
+│   ├── rkdeveloptool-aarch64
+│   └── rkdeveloptool-x86
+├── u-boot
+├── u-boot.itb
+├── uboot-rk3588-rock-5b.dtb
+├── u-boot-rockchip.bin
+└── u-boot-rockchip-spi.bin
+
+4 directories, 20 files
+```
+
+</details>
+
 ### Flash steps
 
 Flash the root file system along with the firmware onto the board. The image is configured to boot from eMMC.
@@ -42,9 +76,11 @@ Flash the root file system along with the firmware onto the board. The image is 
 # 1. Enter maskrom mode (press buttons)
 
 # 2. Flash SPL loader to interact with board
+# You find rk3588_spl_loader_v1 in ./tools/rk3588/
 sudo rkdeveloptool db rk3588_spl_loader_v1.08.111.bin
 
 # 3. Flash partitions
+# Download *.img from release download
 sudo rkdeveloptool wl 0 opencca-image-rockchip-rock5b-rk3588.img
 
 # 4. Reboot
@@ -82,7 +118,7 @@ sudo rkdeveloptool wl 0 u-boot-rockchip-spi.bin
 
 # 2b. Flash eMMC firmware
 sudo rkdeveloptool cs 1
-sudo rkdeveloptool wl 0 u-boot-rockchip-spi.bin
+sudo rkdeveloptool wl 0x40 u-boot-rockchip.bin
 ```
 The u-boot-*.bin already bundles the BL1 and BL2 bootloaders together. You can also flash them manually.
 ```sh
@@ -91,9 +127,12 @@ sudo rkdeveloptool wl 0x4000 u-boot.itb
 sudo rkdeveloptool rd
 ```
 
+`u-boot-*` and `idbloader.img` you obtain by [building the software stack](https://github.com/opencca/opencca-build)
+or from the prebuilt release download.
+
 
 # Using Scripts
-The `flash.sh` script automates common tasks.
+If you build an [opencca automation box](https://opencca.github.io/docs/guides/hardware/), you may use `flash.sh` to automate common tasks.
 A Docker container sets up all dependencies (`./docker/`).
 
 ```sh
@@ -112,7 +151,7 @@ Commands:
   help      - Show this help message
 ```
 
-Copy `env.template` to `.env` and configure it before use.
+Copy `.env.template` to `.env` and configure it before use.
 
 ## Flash to eMMC
 
