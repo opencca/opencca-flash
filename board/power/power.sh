@@ -2,7 +2,7 @@
 set -euo pipefail
 readonly SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-USB="${OPENCCA_USB_SCRIPT:-power_usb_gerneic.sh}"
+USB="${OPENCCA_USB_SCRIPT:-power_usb_generic.sh}"
 PLUG="${OPENCCA_PLUG_SCRIPT:-power_plug_tasmota.sh}"
 POWER_REBOOT_DELAY="${OPENCCA_POWER_REBOOT_DELAY:-3}"
 
