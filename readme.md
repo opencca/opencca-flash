@@ -131,6 +131,33 @@ sudo rkdeveloptool rd
 `u-boot-*` and `idbloader.img` you obtain by [building the software stack](https://github.com/opencca/opencca-build)
 or from the prebuilt release download.
 
+**Update the Linux Kernel:**  
+Updating the firmware does not flash any changes to the Linux kernel. The Linux kernel image is part of `opencca-image-rockchip-rock5b-rk3588.img` and located under `/boot/vmlinuz-6.12.0-opencca-wip` within the image. The simplest way to update the Linux kernel is to rebuilt `opencca-image-rockchip-rock5b-rk3588.img` with the build script in [opencca-build](https://github.com/opencca/opencca-build). However, this takes a lot of time.
+
+A faster method is to directly modify an existing `opencca-image-rockchip-rock5b-rk3588.img` file (e.g. the prebuilt one). Under Linux host systems, link the `.img` file to a loop device, mount it and overwrite `boot/vmlinuz-6.12.0-opencca-wip` with `Image` in `snapshot` after rebuilding the Linux kernel:
+
+```sh
+# 1. Link with /dev/loop0
+sudo losetup -Pf opencca-image-rockchip-rock5b-rk3588.img
+
+# 2. Mount partition 3 (EFI System in image)
+sudo mkdir -p /mnt/opencca_linux
+sudo mount /dev/loop0p3 /mnt/opencca_linux
+
+# 3. Overwrite kernel image (call from within snapshot folder)
+sudo cp Image /mnt/opencca_linux/boot/vmlinuz-6.12.0-opencca-wip
+sudo umount /mnt/opencca_linux
+
+# 4. Enter maskrom mode (press buttons)
+
+# 5. Flash SPL loader to interact with board
+# You find rk3588_spl_loader_v1 in ./tools/rk3588/
+sudo rkdeveloptool db rk3588_spl_loader_v1.08.111.bin
+
+# 6. Flash new partitions (this takes a while)
+sudo rkdeveloptool wl 0 opencca-image-rockchip-rock5b-rk3588.img
+sudo rkdeveloptool rd
+```
 
 # Using Scripts
 If you build an [opencca automation box](https://opencca.github.io/docs/guides/hardware/), you may use `flash.sh` to automate common tasks.
