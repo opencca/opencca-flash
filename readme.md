@@ -7,7 +7,7 @@ This repo provides scripts to simplify flashing the OpenCCA board.  You can eith
 > The ROCK 5B uses USB-C Power Delivery (PD) for power, but **PD negotiation often happens too late**, causing **infinite reboot loops**.
 > 
 > We use an [Anker PowerExpand 6-in-1](https://www.amazon.de/dp/B08CKXNJZS) and a [Anker Nano II](https://www.amazon.de/dp/B094QKV6S8).  
-> Detailed info and compatibility list: [Radxa ROCK 5B Power Supply Info](https://wiki.radxa.com/Rock5/rock5b/powersupply).
+> Detailed info and compatibility list: [Radxa ROCK 5B Power Supply Info](https://wiki.radxa.com/Rock5/5b/power_supply).
 >
 > We recommend the 16 GB Version of the [Rock 5b](https://de.aliexpress.com/item/1005007507141308.html?spm=a2g0o.order_detail.order_detail_item.3.4e1d6368VO4dVf&gatewayAdapt=glo2deu).
 
