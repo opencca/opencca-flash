@@ -10,6 +10,8 @@ This repo provides scripts to simplify flashing the OpenCCA board.  You can eith
 > Detailed info and compatibility list: [Radxa ROCK 5B Power Supply Info](https://wiki.radxa.com/Rock5/5b/power_supply).
 >
 > We recommend the 16 GB Version of the [Rock 5b](https://de.aliexpress.com/item/1005007507141308.html?spm=a2g0o.order_detail.order_detail_item.3.4e1d6368VO4dVf&gatewayAdapt=glo2deu).
+>
+> A [dedicated USB-C splitter](https://github.com/opencca/power-data-pcb/) can split USB-C Power and Data again into their own ports.
 
 More information on flashing, development, and serial console in Radxa documents [Getting Started](https://wiki2.radxa.com/Rock5/5b/getting_started), [Rock 5B](https://docs.radxa.com/en/rock5/rock5b).
 
